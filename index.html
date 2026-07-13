@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preference Choice Ranker</title>
+    <!-- SheetJS CDN for Excel parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.mini.min.js"></script>
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="upload-box">
+        <label for="excel-file" class="upload-btn">📁 Upload Excel Choices</label>
+        <input id="excel-file" type="file" accept=".xlsx, .xls" />
+        <p style="margin-top: 10px; color: #666; font-size: 0.85rem;">Upload your sheet to generate the interactive rank list.</p>
+    </div>
+
+    <div id="rank-list">
+        <!-- Rows populate here -->
+    </div>
+</div>
+<div class="actions-box">
+    <button id="export-btn" class="export-btn">📥 Export & Save Choice List</button>
+</div>
+<!-- Link to external JavaScript file -->
+<script src="script.js"></script>
+</body>
+</html>
