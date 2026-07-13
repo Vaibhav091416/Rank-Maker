@@ -47,6 +47,7 @@ input[type="file"] {
     border: 1px solid #2d2d2d;
     border-radius: 8px;
     padding: 14px 16px;
+    position: relative;
 }
 
 /* Draggable specific rows */
@@ -102,25 +103,90 @@ input[type="file"] {
     gap: 20px;
     flex-grow: 1;
     padding-left: 10px;
+    margin-right: 15px; /* Leave space for delete button */
 }
 .code-id {
     color: #4da3ff;
     font-weight: 600;
     font-size: 0.95rem;
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.2s;
 }
-
-/* Header distinct column colors */
-.header-row .code-id {
-    color: #aaa;
-}
-.header-row .name-text {
-    color: #aaa;
+.code-id:hover {
+    border-bottom-color: #4da3ff;
 }
 
 .name-text {
     color: #e0e0e0;
     font-weight: 500;
     font-size: 0.95rem;
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.2s;
+    word-break: break-word;
+}
+.name-text:hover {
+    border-bottom-color: #e0e0e0;
+}
+
+/* Header distinct column colors */
+.header-row .code-id, .header-row .name-text {
+    color: #aaa;
+    cursor: default;
+    border-bottom: none !important;
+}
+
+/* Delete Button on the far right */
+.delete-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, transform 0.1s;
+    margin-left: auto;
+    user-select: none;
+    line-height: 1;
+}
+.delete-btn:hover {
+    color: #ff4d4d;
+    transform: scale(1.15);
+}
+.delete-btn:active {
+    transform: scale(0.95);
+}
+
+/* Header placeholder spacing alignment */
+.header-space {
+    width: 25px;
+    margin-left: auto;
+}
+
+/* Inline Edit Field styles */
+.edit-input {
+    background-color: #121212 !important;
+    border: 1px solid #4da3ff !important;
+    color: #ffffff !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    width: 100%;
+}
+.edit-input.code-edit {
+    font-weight: 600;
+    color: #4da3ff !important;
+    max-width: 100px;
+}
+.edit-input.name-edit {
+    font-weight: 500;
+    color: #e0e0e0 !important;
 }
 
 /* Dragging States */

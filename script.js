@@ -49,6 +49,7 @@ function renderList() {
             <span class="code-id">${headerRowData[0] || 'Code'}</span>
             <span class="name-text">${headerRowData[1] || 'Institute Name'}</span>
         </div>
+        <div class="header-space"></div>
     `;
     listContainer.appendChild(headerEl);
 
@@ -74,15 +75,69 @@ function renderList() {
                 <div class="rank-index">${index + 1}</div>
             </div>
             <div class="row-content">
-                <span class="code-id">${row[0] || ''}</span>
-                <span class="name-text">${row[1] || ''}</span>
+                <span class="code-id" title="Double click to edit">${row[0] || ''}</span>
+                <span class="name-text" title="Double click to edit">${row[1] || ''}</span>
             </div>
+            <button class="delete-btn" title="Delete Row">&times;</button>
         `;
+
+        // Attach Update (Inline Editing) listeners
+        const codeSpan = rowEl.querySelector('.code-id');
+        const nameSpan = rowEl.querySelector('.name-text');
+
+        setupInlineEdit(rowEl, codeSpan, 'code');
+        setupInlineEdit(rowEl, nameSpan, 'name');
+
+        // Attach Delete listener
+        const deleteBtn = rowEl.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // prevent drag trigger on click
+            rowEl.remove();
+            updateRankNumbers();
+        });
 
         rowEl.addEventListener('dragstart', () => rowEl.classList.add('dragging'));
         rowEl.addEventListener('dragend', () => rowEl.classList.remove('dragging'));
 
         listContainer.appendChild(rowEl);
+    });
+}
+
+// Inline Editing Handler Configuration
+function setupInlineEdit(rowEl, spanElement, type) {
+    spanElement.addEventListener('dblclick', (e) => {
+        e.stopPropagation(); // Prevents layout selection issues during quick double-clicks
+        if (spanElement.querySelector('input')) return; // Already editing
+
+        const currentText = spanElement.innerText;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentText;
+        input.className = `edit-input ${type === 'code' ? 'code-edit' : 'name-edit'}`;
+
+        // Temporarily disable row dragging while typing
+        rowEl.setAttribute('draggable', 'false');
+
+        spanElement.innerText = '';
+        spanElement.appendChild(input);
+        input.focus();
+
+        const saveChange = () => {
+            const newValue = input.value.trim();
+            // Revert back to span content. Fallback to old value if cleared out completely
+            spanElement.innerText = newValue !== '' ? newValue : currentText;
+            rowEl.setAttribute('draggable', 'true');
+        };
+
+        // Blur event handler
+        input.addEventListener('blur', saveChange);
+
+        // Key press listener
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                saveChange();
+            }
+        });
     });
 }
 
@@ -131,8 +186,8 @@ function updateRankNumbers() {
 
 // Open Modal Interface
 exportBtn.addEventListener('click', () => {
-    const rows = listContainer.querySelectorAll('.list-row');
-    if (rows.length <= 1) {
+    const rows = listContainer.querySelectorAll('.draggable-row');
+    if (rows.length === 0) {
         alert("Please load an Excel sheet with choice preferences first!");
         return;
     }
