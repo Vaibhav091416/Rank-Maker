@@ -21,10 +21,30 @@
     <div id="rank-list">
         <!-- Rows populate here -->
     </div>
+
+    <div class="actions-box">
+        <button id="export-btn" class="export-btn">📥 Export & Save Choice List</button>
+    </div>
 </div>
-<div class="actions-box">
-    <button id="export-btn" class="export-btn">📥 Export & Save Choice List</button>
+
+<!-- Modal Popup for Export Options -->
+<div id="export-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Export Options</h3>
+        <div class="input-group">
+            <label for="filename-input">File Name:</label>
+            <input type="text" id="filename-input" value="Final_Ranked_Choices">
+            <span>.xlsx</span>
+        </div>
+        <div class="modal-buttons">
+            <button id="modal-download-btn" class="modal-action-btn download">💾 Download Excel</button>
+            <button id="modal-email-btn" class="modal-action-btn email">✉️ Share via Email</button>
+            <button id="modal-wa-btn" class="modal-action-btn whatsapp">💬 Share via WhatsApp</button>
+            <button id="modal-close-btn" class="modal-cancel-btn">Cancel</button>
+        </div>
+    </div>
 </div>
+
 <!-- Link to external JavaScript file -->
 <script src="script.js"></script>
 </body>

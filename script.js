@@ -1,8 +1,17 @@
 const fileInput = document.getElementById('excel-file');
 const listContainer = document.getElementById('rank-list');
-const exportBtn = document.getElementById('export-btn');
 let itemsData = [];
 
+// DOM Selectors for the Modal Elements
+const exportBtn = document.getElementById('export-btn');
+const modal = document.getElementById('export-modal');
+const filenameInput = document.getElementById('filename-input');
+const downloadBtn = document.getElementById('modal-download-btn');
+const emailBtn = document.getElementById('modal-email-btn');
+const whatsappBtn = document.getElementById('modal-wa-btn');
+const closeBtn = document.getElementById('modal-close-btn');
+
+// File Upload Event Listener
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -21,6 +30,7 @@ fileInput.addEventListener('change', (e) => {
     reader.readAsArrayBuffer(file);
 });
 
+// Render the Table List
 function renderList() {
     listContainer.innerHTML = '';
     if (itemsData.length === 0) return;
@@ -76,6 +86,7 @@ function renderList() {
     });
 }
 
+// Drag over layout calculations
 listContainer.addEventListener('dragover', (e) => {
     e.preventDefault();
     const draggingEl = document.querySelector('.dragging');
@@ -118,55 +129,78 @@ function updateRankNumbers() {
     });
 }
 
-exportBtn.addEventListener('click', exportRankedList);
-function exportRankedList() {
+// Open Modal Interface
+exportBtn.addEventListener('click', () => {
     const rows = listContainer.querySelectorAll('.list-row');
     if (rows.length <= 1) {
         alert("Please load an Excel sheet with choice preferences first!");
         return;
     }
+    modal.style.display = 'flex';
+});
 
-    const exportedData = [];
+// Close Modal Interface
+closeBtn.addEventListener('click', () => modal.style.display = 'none');
 
-    // 1. Re-compile the grid layout matrix tracking updated indices
+// Extract current ranked data out of DOM
+function getRankedDataMatrix() {
+    const rows = listContainer.querySelectorAll('.list-row');
+    const matrix = [];
     rows.forEach((row) => {
         const isHeader = row.classList.contains('header-row');
         const code = row.querySelector('.code-id').innerText;
         const name = row.querySelector('.name-text').innerText;
         
         if (isHeader) {
-            // Re-apply explicit headers to the output file structure
-            exportedData.push(["Final Rank", code, name]);
+            matrix.push(["Final Rank", code, name]);
         } else {
             const rank = row.querySelector('.rank-index').innerText;
-            exportedData.push([parseInt(rank, 10), code, name]);
+            matrix.push([parseInt(rank, 10), code, name]);
         }
     });
-
-    // 2. Build the updated binary spreadsheet workbook via SheetJS tools
-    const newWorksheet = XLSX.utils.aoa_to_sheet(exportedData);
-    const newWorkbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Final Ranks");
-
-    // 3. Trigger immediate client-side system download
-    const filename = "Final_Ranked_Choices.xlsx";
-    XLSX.writeFile(newWorkbook, filename);
-
-    // 4. Draft email draft notification sharing configuration
-    // Because file attachments require dedicated server architectures, this builds a direct 
-    // mailto configuration link summarizing your updated selections for sharing.
-    setTimeout(() => {
-        const confirmShare = confirm("Spreadsheet downloaded successfully! Do you want to share a text summary of these ranks via email right now?");
-        if (confirmShare) {
-            let emailBody = "Here is my final preference choice list:\n\n";
-            exportedData.slice(1).forEach(item => {
-                emailBody += `Rank ${item[0]}: [${item[1]}] ${item[2]}\n`;
-            });
-            
-            const subject = encodeURIComponent("My Final Preference Choice Ranks");
-            const body = encodeURIComponent(emailBody);
-            
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
-        }
-    }, 500);
+    return matrix;
 }
+
+// Generate text payload summary for updates
+function getTextSummary(matrix) {
+    let summaryText = "Here is my final preference choice list:\n\n";
+    matrix.slice(1).forEach(item => {
+        summaryText += `Rank ${item[0]}: [${item[1]}] ${item[2]}\n`;
+    });
+    return summaryText;
+}
+
+// Action 1: Download File with Custom Name
+downloadBtn.addEventListener('click', () => {
+    const matrix = getRankedDataMatrix();
+    let name = filenameInput.value.trim().replace(/[/\\?%*:|"<>]/g, '-');
+    if (!name) name = "Final_Ranked_Choices";
+    
+    const ws = XLSX.utils.aoa_to_sheet(matrix);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Final Ranks");
+    
+    XLSX.writeFile(wb, `${name}.xlsx`);
+    modal.style.display = 'none';
+});
+
+// Action 2: Share Text Summary via Email
+emailBtn.addEventListener('click', () => {
+    const matrix = getRankedDataMatrix();
+    const bodyText = getTextSummary(matrix);
+    const subject = encodeURIComponent("My Final Preference Choice Ranks");
+    const body = encodeURIComponent(bodyText);
+    
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    modal.style.display = 'none';
+});
+
+// Action 3: Share Text Summary via WhatsApp Web/App
+whatsappBtn.addEventListener('click', () => {
+    const matrix = getRankedDataMatrix();
+    const bodyText = getTextSummary(matrix);
+    const encodedText = encodeURIComponent(bodyText);
+    
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+    modal.style.display = 'none';
+});

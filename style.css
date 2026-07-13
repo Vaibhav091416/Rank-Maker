@@ -130,23 +130,99 @@ input[type="file"] {
     background-color: #152331;
 }
 
-/*Button*/
+/* Export Area Styles */
 .actions-box {
-    margin-top: 25px;
+    margin-top: 30px;
+    margin-bottom: 20px;
     text-align: center;
 }
 .export-btn {
     display: inline-block;
-    padding: 12px 24px;
+    padding: 14px 28px;
     cursor: pointer;
-    background-color: #4CAF50;
+    background-color: #2196F3;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-weight: bold;
     font-size: 1rem;
     transition: background-color 0.2s;
 }
 .export-btn:hover {
-    background-color: #45a049;
+    background-color: #1976D2;
+}
+
+/* Modal Overlay covering the screen */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+/* Modal Inner Container */
+.modal-content {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    color: #fff;
+}
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+.input-group input {
+    flex-grow: 1;
+    background: #121212;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.modal-action-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.95rem;
+}
+.modal-action-btn.download { background-color: #4CAF50; color: white; }
+.modal-action-btn.email { background-color: #ff9800; color: white; }
+.modal-action-btn.whatsapp { background-color: #25D366; color: white; }
+.modal-cancel-btn {
+    padding: 10px;
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.modal-cancel-btn:hover {
+    background: #2a2a2a;
+    color: #fff;
 }
